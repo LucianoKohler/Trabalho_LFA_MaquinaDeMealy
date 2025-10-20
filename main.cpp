@@ -29,7 +29,7 @@ int main(int argc, char* argv[]){
     vector<string> alfabetoEntrada;
     vector<string> alfabetoSaida;
 
-    char linha[20];
+    char linha[100];
 
     // 2. Primeira linha = estados
     fgets(linha, sizeof(linha), f);
@@ -90,6 +90,19 @@ int main(int argc, char* argv[]){
 
     // Printando as transições de q0
     for(transicao t : transicoes["q0"]){
-        cout << "q0 " << t.entrada << " " << t.estadoSaida << " " << t.saida << endl;
+        //cout << "q0 " << t.entrada << " " << t.estadoSaida << " " << t.saida << endl;
     }
+    
+    string arquivoPalavra = argv[2];
+    string  tam = arquivoPalavra.substr(10, find(arquivoPalavra.begin(), arquivoPalavra.end(), '.') - arquivoPalavra.begin() - 10);
+    
+    ofstream fOut("out/saida.ppm");
+    ifstream fIn(arquivoPalavra.c_str());
+
+    fOut << "P1" << endl;
+    fOut << tam << " " << tam << endl;
+
+    string palavra;
+    getline(fIn, palavra);
+    cout << palavra << endl;; 
 }
