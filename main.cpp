@@ -16,8 +16,8 @@ int main(int argc, char* argv[]){
     // 1. Recebendo o autômato à partir da expressão regular escolhida
     string nomeArquivo = argv[1];
 
-    FILE *f = fopen(nomeArquivo.c_str(), "rt");
-    if (f == NULL){
+    ifstream f(nomeArquivo.c_str());
+    if (!f.is_open()){
         cout << "Erro: Arquivo não pôde ser aberto\n";
         return 1;
     }
@@ -26,71 +26,75 @@ int main(int argc, char* argv[]){
     vector<string> estados;
     string estadoInicial;
     vector<string> estadosFinais; 
-    vector<string> alfabetoEntrada;
+    vector<char> alfabetoEntrada;
     vector<string> alfabetoSaida;
 
-    char linha[100];
-
     // 2. Primeira linha = estados
-    fgets(linha, sizeof(linha), f);
-    char* token;
-    const char* delimitador = " ";
-    token = strtok(linha, delimitador);
-    while(token != NULL){ // Elemento por elemento
-        estados.push_back(token);
-        token = strtok(NULL, delimitador);
+    string linha;
+    getline(f, linha);
+    stringstream ss(linha);
+    string estado;
+    while(ss >> estado){ // Elemento por elemento
+        estados.push_back(estado);
     }
 
     // 2. Segunda linha = estado inicial
-    fgets(linha, sizeof(linha), f);
+    getline(f, linha);
     estadoInicial = linha;
 
     // 2. Terceira linha = estados finais
-    fgets(linha, sizeof(linha), f);
-    token = strtok(linha, delimitador);
-    while(token != NULL){ // Elemento por elemento
-        estadosFinais.push_back(token);
-        token = strtok(NULL, delimitador);
+    getline(f, linha);
+    string finais;
+    ss.clear();       
+    ss.str(linha);
+    while(ss >> finais){ // Elemento por elemento
+        estadosFinais.push_back(finais);
     }
 
     // 2. Quarta linha = alfabeto de entrada
-    fgets(linha, sizeof(linha), f);
-    token = strtok(linha, delimitador);
-    while(token != NULL){ // Elemento por elemento
-        alfabetoEntrada.push_back(token);
-        token = strtok(NULL, delimitador);
+    getline(f, linha);
+    char c;
+    ss.clear();       
+    ss.str(linha);
+    while(ss >> c){ // Elemento por elemento
+        alfabetoEntrada.push_back(c);
     }
 
     // 2. Quinta linha = alfabeto de saida
-    fgets(linha, sizeof(linha), f);
-    token = strtok(linha, delimitador);
-    while(token != NULL){ // Elemento por elemento
-        alfabetoSaida.push_back(token);
-        token = strtok(NULL, delimitador);
+    getline(f,linha);
+    ss.clear();       
+    ss.str(linha);
+    string saida;
+    while(ss >> saida){ // Elemento por elemento
+        alfabetoSaida.push_back(saida);
     }
 
     // 3. Lendo as transições
     struct transicao{
-        string entrada; // 1, 2, 3, 4, ., N
+        char entrada; // 1, 2, 3, 4, ., N
         string saida; // 1, 0, e, \n
         string estadoSaida;
-        transicao(string entrada, string saida, string estadoSaida) : entrada(entrada), saida(saida), estadoSaida(estadoSaida){};
+        transicao(char entrada, string saida, string estadoSaida) : entrada(entrada), saida(saida), estadoSaida(estadoSaida){};
     };
 
     map<string, vector<transicao>> transicoes;
 
-    while(fgets(linha, sizeof(linha), f) != NULL){
-        string estadoAtual = strtok(linha, delimitador);
-        string charEntrada = strtok(NULL, delimitador);
-        string estadoDepois = strtok(NULL, delimitador);
-        string charSaida = strtok(NULL, delimitador);
+    while(getline(f,linha)){
+        ss.clear();       
+        ss.str(linha);
+        string estadoAtual;
+        char charEntrada;
+        string estadoDepois;
+        string charSaida;
+
+        ss >> estadoAtual >> charEntrada >> estadoDepois >> charSaida;
 
         transicoes[estadoAtual].emplace_back(charEntrada, charSaida, estadoDepois);
     }
 
     // Printando as transições de q0
-    for(transicao t : transicoes["q0"]){
-        //cout << "q0 " << t.entrada << " " << t.estadoSaida << " " << t.saida << endl;
+    for(auto [e,v] : transicoes){
+        //for(auto t : v) cout << e << " " << t.entrada << " " << t.estadoSaida << " " << t.saida << endl;
     }
     
     string arquivoPalavra = argv[2];
@@ -104,5 +108,18 @@ int main(int argc, char* argv[]){
 
     string palavra;
     getline(fIn, palavra);
-    cout << palavra << endl;; 
+
+    string atual = "q0";
+    for(char c: palavra){
+        for(transicao t: transicoes[atual]){
+            if(t.entrada == c){
+                atual = t.estadoSaida;
+                if(t.saida == "e") break;
+                else if(t.saida == "\\n") fOut << endl;
+                else fOut << t.saida;
+                break;
+            }
+        }
+        if(c == '.') atual = "q0";
+    }
 }
