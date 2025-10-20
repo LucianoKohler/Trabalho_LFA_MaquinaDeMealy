@@ -7,11 +7,14 @@
 
 using namespace std;
 
-int main(){
 
+int main(int argc, char* argv[]){
+
+  if(argc < 2){
+    cout << "Erro: arquivo de entrada não passado" << endl;
+  }
   // 1. Recebendo o autômato à partir da expressão regular escolhida
-  string automatoEscolhido = "1"; // MM1.txt
-  string nomeArquivo = "maquinas/MM" + automatoEscolhido + ".txt";
+  string nomeArquivo = argv[1];
 
   FILE *f = fopen(nomeArquivo.c_str(), "rt");
   if (f == NULL){
@@ -44,8 +47,6 @@ int main(){
 
   // 2. Terceira linha = estados finais
   fgets(linha, sizeof(linha), f);
-  char* token;
-  const char* delimitador = " ";
   token = strtok(linha, delimitador);
   while(token != NULL){ // Elemento por elemento
       estadosFinais.push_back(token);
@@ -54,8 +55,6 @@ int main(){
 
   // 2. Quarta linha = alfabeto de entrada
   fgets(linha, sizeof(linha), f);
-  char* token;
-  const char* delimitador = " ";
   token = strtok(linha, delimitador);
   while(token != NULL){ // Elemento por elemento
       alfabetoEntrada.push_back(token);
@@ -64,13 +63,33 @@ int main(){
 
   // 2. Quinta linha = alfabeto de saida
   fgets(linha, sizeof(linha), f);
-  char* token;
-  const char* delimitador = " ";
   token = strtok(linha, delimitador);
   while(token != NULL){ // Elemento por elemento
       alfabetoSaida.push_back(token);
       token = strtok(NULL, delimitador);
     }
 
-    // Automato traduzido
+    // 3. Lendo as transições
+    struct transicao{
+      string entrada; // 1, 2, 3, 4, ., N
+      string saida; // 1, 0, e, \n
+      string estadoSaida;
+      transicao(string entrada, string saida, string estadoSaida) : entrada(entrada), saida(saida), estadoSaida(estadoSaida){};
+    };
+
+    map<string, vector<transicao>> transicoes;
+
+    while(fgets(linha, sizeof(linha), f) != NULL){
+      string estadoAtual = strtok(linha, delimitador);
+      string charEntrada = strtok(NULL, delimitador);
+      string estadoDepois = strtok(NULL, delimitador);
+      string charSaida = strtok(NULL, delimitador);
+
+      transicoes[estadoAtual].emplace_back(charEntrada, charSaida, estadoDepois);
+    }
+
+    // Printando as transições de q0
+    for(transicao t : transicoes["q0"]){
+      cout << "q0 " << t.entrada << " " << t.estadoSaida << " " << t.saida << endl;
+    }
 }
