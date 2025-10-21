@@ -38,4 +38,4 @@ qr 1 qr e
 qr 2 qr e
 qr 3 qr e
 qr 4 qr e
-qr . qr e  
+qr . q0 e  
