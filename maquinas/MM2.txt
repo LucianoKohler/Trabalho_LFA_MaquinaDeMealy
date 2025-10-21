@@ -2,11 +2,40 @@ q0 q1 q2 q3 q4 qc qr
 q0
 q0
 1 2 3 4 . N
-0 1 \n e
+0 1 \n
 q0 N q0 \n
 q0 . q0 1
 q0 1 q1 e
 q0 2 q2 e
 q0 3 q3 e
 q0 4 q4 e
-
+q1 2 qc e
+q1 4 qc e
+q1 1 qr 0
+q1 3 qr 0
+q1 . q0 0
+q2 1 qc e
+q2 3 qc e
+q2 2 qr 0
+q2 4 qr 0
+q2 . q0 0
+q3 2 qc e
+q3 4 qc e
+q3 1 qr 0
+q3 3 qr 0
+q3 . q0 0
+q4 1 qc e
+q4 3 qc e
+q4 2 qr 0
+q4 4 qr 0
+q4 . q0 0
+qc 1 q1 e
+qc 2 q2 e
+qc 3 q3 e
+qc 4 q4 e
+qc . q0 1
+qr 1 qr e
+qr 2 qr e
+qr 3 qr e
+qr 4 qr e
+qr . qr e  

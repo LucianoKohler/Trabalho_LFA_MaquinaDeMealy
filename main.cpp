@@ -7,11 +7,20 @@
 
 using namespace std;
 
+struct transicao{
+    char entrada; 
+    string saida;
+    string estadoSaida;
+    transicao(char entrada, string saida, string estadoSaida) : entrada(entrada), saida(saida), estadoSaida(estadoSaida){};
+};
+
 int main(int argc, char* argv[]){
 
     if(argc < 2){
         cout << "Erro: arquivo de entrada não passado" << endl;
+        return 1;
     }
+
     // 1. Recebendo o autômato à partir da expressão regular escolhida
     string nomeArquivo = argv[1];
 
@@ -27,57 +36,41 @@ int main(int argc, char* argv[]){
     vector<string> estadosFinais; 
     vector<char> alfabetoEntrada;
     vector<string> alfabetoSaida;
+    map<string, vector<transicao>> transicoes;
 
-    // 2. Primeira linha = estados
+    // 2.1 Primeira linha = estados
     string linha;
     getline(f, linha);
     stringstream ss(linha);
     string estado;
-    while(ss >> estado){ // Elemento por elemento
-        estados.push_back(estado);
-    }
+    while(ss >> estado) estados.push_back(estado);
 
-    // 2. Segunda linha = estado inicial
+    // 2.2 Segunda linha = estado inicial
     getline(f, linha);
     estadoInicial = linha;
 
-    // 2. Terceira linha = estados finais
+    // 2.3 Terceira linha = estados finais
     getline(f, linha);
     string finais;
     ss.clear();       
     ss.str(linha);
-    while(ss >> finais){ // Elemento por elemento
-        estadosFinais.push_back(finais);
-    }
+    while(ss >> finais) estadosFinais.push_back(finais);
 
-    // 2. Quarta linha = alfabeto de entrada
+    // 2.4 Quarta linha = alfabeto de entrada
     getline(f, linha);
     char c;
     ss.clear();       
     ss.str(linha);
-    while(ss >> c){ // Elemento por elemento
-        alfabetoEntrada.push_back(c);
-    }
+    while(ss >> c) alfabetoEntrada.push_back(c);
 
-    // 2. Quinta linha = alfabeto de saida
+    // 2.5 Quinta linha = alfabeto de saida
     getline(f,linha);
     ss.clear();       
     ss.str(linha);
     string saida;
-    while(ss >> saida){ // Elemento por elemento
-        alfabetoSaida.push_back(saida);
-    }
+    while(ss >> saida) alfabetoSaida.push_back(saida);
 
     // 3. Lendo as transições
-    struct transicao{
-        char entrada; // 1, 2, 3, 4, ., N
-        string saida; // 1, 0, e, \n
-        string estadoSaida;
-        transicao(char entrada, string saida, string estadoSaida) : entrada(entrada), saida(saida), estadoSaida(estadoSaida){};
-    };
-
-    map<string, vector<transicao>> transicoes;
-
     while(getline(f,linha)){
         ss.clear();       
         ss.str(linha);
@@ -91,23 +84,17 @@ int main(int argc, char* argv[]){
         transicoes[estadoAtual].emplace_back(charEntrada, charSaida, estadoDepois);
     }
 
-    // Printando as transições de q0
-    for(auto [e,v] : transicoes){
-        //for(auto t : v) cout << e << " " << t.entrada << " " << t.estadoSaida << " " << t.saida << endl;
-    }
-    
     string arquivoPalavra = argv[2];
-    string  tam = arquivoPalavra.substr(10, find(arquivoPalavra.begin(), arquivoPalavra.end(), '.') - arquivoPalavra.begin() - 10);
-    
-    string nomeSaida = "out/" + arquivoPalavra.substr(9, find(arquivoPalavra.begin(), arquivoPalavra.end(), '.') - arquivoPalavra.begin() - 9) + "saida.ppm";
-    ofstream fOut(nomeSaida);
     ifstream fIn(arquivoPalavra.c_str());
+    string palavra;
+    getline(fIn, palavra);
+
+    string tam = to_string(1ll << (find(palavra.begin(), palavra.end(), '.') - palavra.begin()));
+    string nomeSaida = "out/w" + tam + "saida.ppm";
+    ofstream fOut(nomeSaida);
 
     fOut << "P1" << endl;
     fOut << tam << " " << tam << endl;
-
-    string palavra;
-    getline(fIn, palavra);
 
     string atual = "q0";
     for(char c: palavra){
