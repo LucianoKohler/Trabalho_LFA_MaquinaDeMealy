@@ -100,7 +100,6 @@ int main(int argc, char* argv[]){
     string  tam = arquivoPalavra.substr(10, find(arquivoPalavra.begin(), arquivoPalavra.end(), '.') - arquivoPalavra.begin() - 10);
     
     string nomeSaida = "out/" + arquivoPalavra.substr(9, find(arquivoPalavra.begin(), arquivoPalavra.end(), '.') - arquivoPalavra.begin() - 9) + "saida.ppm";
-    cout << nomeSaida << endl;
     ofstream fOut(nomeSaida);
     ifstream fIn(arquivoPalavra.c_str());
 
