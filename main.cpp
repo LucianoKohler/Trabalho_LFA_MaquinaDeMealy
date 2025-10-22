@@ -1,10 +1,5 @@
 #include <bits/stdc++.h>
 
-// Expressões recebidas:
-// 1. (1+2+4)*3(2+4)*3(1+2+3+4)*
-// 2. (12+14+32+34+21+23+41+43)*
-// 3. (1+3)*(2+4)*
-
 using namespace std;
 
 struct transicao{
@@ -16,8 +11,8 @@ struct transicao{
 
 int main(int argc, char* argv[]){
 
-    if(argc < 2){
-        cout << "Erro: arquivo de entrada não passado" << endl;
+    if(argc <= 2){
+        cout << "Erro: arquivos de entrada não passados" << endl;
         return 1;
     }
 
@@ -26,7 +21,7 @@ int main(int argc, char* argv[]){
 
     ifstream f(nomeArquivo.c_str());
     if (!f.is_open()){
-        cout << "Erro: Arquivo não pôde ser aberto\n";
+        cout << "Erro: Arquivo da máquina não pôde ser aberto\n";
         return 1;
     }
 
@@ -84,8 +79,17 @@ int main(int argc, char* argv[]){
         transicoes[estadoAtual].emplace_back(charEntrada, charSaida, estadoDepois);
     }
 
+    f.close();
+
     string arquivoPalavra = argv[2];
     ifstream fIn(arquivoPalavra.c_str());
+
+    if (!fIn.is_open()){
+        cout << "Erro: Arquivo da palavra não pôde ser aberto\n";
+        return 1;
+    }
+    
+    // 4. Lendo a palavra de entrada e formatando o arquivo de saída
     string palavra;
     getline(fIn, palavra);
 
@@ -93,9 +97,15 @@ int main(int argc, char* argv[]){
     string nomeSaida = "out/w" + tam + "saida.ppm";
     ofstream fOut(nomeSaida);
 
+    if (!fOut.is_open()){
+        cout << "Erro: Arquivo de saída não pôde ser aberto\n";
+        return 1;
+    }
+
     fOut << "P1" << endl;
     fOut << tam << " " << tam << endl;
 
+    // 5. Processando a palavra
     string atual = "q0";
     for(char c: palavra){
         for(transicao t: transicoes[atual]){
@@ -109,4 +119,8 @@ int main(int argc, char* argv[]){
         }
         if(c == '.') atual = "q0";
     }
+
+    cout << "Arquivo gerado na pasta 'out'" << endl;
+    fIn.close();
+    fOut.close();
 }
