@@ -6,7 +6,7 @@
 
 ### Apresentação do Projeto
 
-Este repositório representa um trabalho da matéria de **LFA** (Linguagens Formais e Autômatos), onde, à partir de máquinas de uma **palavra** que representa [plano cartesiano setorizado](https://en.wikipedia.org/wiki/Quadtree) e uma [máquina de Mealy](https://en-wikipedia-org.translate.goog/wiki/Mealy_machine?_x_tr_sl=en&_x_tr_tl=pt&_x_tr_hl=pt&_x_tr_pto=tc) que representa uma [expressão regular](https://pt.wikipedia.org/wiki/Express%C3%A3o_regular), é gerado um **fractal** de tamanho condizente com o tamanho da palavra recebida
+Este repositório representa um trabalho da matéria de **LFA** (Linguagens Formais e Autômatos), onde, à partir de máquinas de uma **palavra** que representa [plano cartesiano setorizado](https://en.wikipedia.org/wiki/Quadtree) e uma [máquina de Mealy](https://en.wikipedia.org/wiki/Mealy_machine) que representa uma [expressão regular](https://pt.wikipedia.org/wiki/Express%C3%A3o_regular), é gerado um **fractal** de tamanho condizente com o tamanho da palavra recebida
 
 Para o trabalho, foram recebidas três expressões regulares por parte da professora orientadora, cada uma com uma lógica distinta que gera uma saída distinta.
 
